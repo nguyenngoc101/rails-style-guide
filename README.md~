@@ -136,7 +136,6 @@ abbreviations.
 * If you need model objects that support ActiveRecord behavior(like
   validation) use the
 * Tên của model phải ngắn gọn, có nghĩa nhưng không được viết tắt
-* Nếu cần non-ActiveRecord model objects hỗ trợ một vài thuộc tính của ActiveRecord(giống validation) sử dụng 
   [ActiveAttr](https://github.com/cgriego/active_attr) gem.
 
     ```Ruby
@@ -164,11 +163,9 @@ abbreviations.
 * Avoid altering ActiveRecord defaults (table names, primary key, etc)
   unless you have a very good reason (like a database that's not under
   your control).
-* Tránh thay đổi các giá trị mặc định của ActiveRecord (tên bảng, khóa chính, ...) trừ phi bạn có những lý do chính đáng (ví dụ như database không còn dưới sự kiểm soát của bạn)
 
     ```Ruby
-    # bad - don't do this if you can modify
-    # bad - bạn không nên sửa schema file giống như dưới đây	
+    # bad - don't do this if you can modify the schema
     class Transaction < ActiveRecord::Base
       self.table_name = 'order'
       ...
@@ -177,32 +174,26 @@ abbreviations.
 
 * Group macro-style methods (`has_many`, `validates`, etc) in the
   beginning of the class definition.
-* Nhóm các methods macro (has_many, validates,..) vào phần trên cùng trong class được khai báo
 
     ```Ruby
     class User < ActiveRecord::Base
       # keep the default scope first (if any)
-      # khai báo scope macro trước
       default_scope { where(active: true) }
 
       # constants come up next
-      # Tiếp theo là khai báo hằng
       GENDERS = %w(male female)
 
       # afterwards we put attr related macros
-      # Sau đó là các khai báo thuộc tính cho lớp
       attr_accessor :formatted_date_of_birth
 
       attr_accessible :login, :first_name, :last_name, :email, :password
 
       # followed by association macros
-      # theo sau là các association
       belongs_to :country
 
       has_many :authentications, dependent: :destroy
 
       # and validation macros
-      # và các validation
       validates :email, presence: true
       validates :username, presence: true
       validates :username, uniqueness: { case_sensitive: false }
@@ -210,12 +201,10 @@ abbreviations.
       validates :password, format: { with: /\A\S{8,128}\z/, allow_nil: true}
 
       # next we have callbacks
-      # tiếp đến chúng ta gọi các callbacks
       before_save :cook
       before_save :update_username_lower
 
       # other macros (like devise's) should be placed after the callbacks
-      # cuối cùng các macros khác nên được đặt sau các callback
 
       ...
     end
@@ -223,11 +212,9 @@ abbreviations.
 
 * Prefer `has_many :through` to `has_and_belongs_to_many`. Using `has_many
 :through` allows additional attributes and validations on the join model.
-* Nên sử dụng 'has_many :through' thay vì 'has_and_belongs_to_many'. Vì sử dụng 'has_many :through' cho phép add thêm các thuộc tính và các validations vào join model.
 
     ```Ruby
     # using has_and_belongs_to_many
-    # sử dụng has_and_belongs_to_many
     class User < ActiveRecord::Base
       has_and_belongs_to_many :groups
     end
@@ -237,7 +224,6 @@ abbreviations.
     end
 
     # prefered way - using has_many :through
-    # cách tốt hơn- sử dụng has_many :through
     class User < ActiveRecord::Base
       has_many :memberships
       has_many :groups, through: :memberships
@@ -255,7 +241,6 @@ abbreviations.
     ```
 
 * Prefer `self[:attribute]` over `read_attribute(:attribute)`.
-* Nên sử dụng 'self[:attribute]' thay vì  'read_attribute(:attribute)'
 
     ```Ruby
     # bad
@@ -270,7 +255,6 @@ abbreviations.
     ```
 
 * Always use the new
-* Luôn sử dụng các new
   ["sexy" validations](http://thelucid.com/2010/01/08/sexy-validation-in-edge-rails-rails-3/).
 
     ```Ruby
@@ -283,7 +267,6 @@ abbreviations.
 
 * When a custom validation is used more than once or the validation is
 some regular expression mapping, create a custom validator file.
-* khi mà bạn muốn tự viết một validation được sử dụng nhiều lần hãy tạo ra một file riêng để lưu trữ các validation này
 
     ```Ruby
     # bad
@@ -308,8 +291,6 @@ some regular expression mapping, create a custom validator file.
   maintaining several related apps or the validators are generic
   enough.
 * Use named scopes freely.
-* Đặt các validators của bạn trong thư mục 'lib/validators'
-* Đặt tên cho các scope ngắn ngọn, dễ hiểu.
 
     ```Ruby
     class User < ActiveRecord::Base
@@ -321,7 +302,6 @@ some regular expression mapping, create a custom validator file.
     ```
 
 * Wrap named scopes in `lambdas` to initialize them lazily.
-* Dùng 'lambdas' để khởi tạo 'lười' các scope
 
     ```Ruby
     # bad
@@ -346,7 +326,6 @@ complicated, it is preferable to make a class method instead which serves
 the same purpose of the named scope and returns an
 `ActiveRecord::Relation` object. Arguably you can define even simpler
 scopes like this.
-* Khi một scope được định nghĩa bởi lambda và các tham số,là phức tạp, bạn nên tạo riêng một class method, method này đóng vai trò như scope và trả ra môt đối tượng thuộc lớp `ActiveRecord::Relation`.
 
     ```Ruby
     class User < ActiveRecord::Base
